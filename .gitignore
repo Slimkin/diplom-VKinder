@@ -1,0 +1,6 @@
+Trumbs.db
+tmp/
+/tmp/
+desktop.ini
+/__pycache__/
+.ipynb_checkpoints
