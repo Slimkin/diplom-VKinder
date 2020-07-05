@@ -1,5 +1,7 @@
 import requests
 import time
+from data_from_user import from_ages, to_ages, status, gender
+from menu import about_city, about_status, about_fromAges, about_gender, about_toAges
 
 class VkApi:
 
@@ -56,3 +58,48 @@ class VkApi:
             print('введено неправильное значение, попробуйте еще раз')
             self.where_are_looking()
         return city_number
+
+    def pair_search(self):
+        params = {}
+        about_gender()
+        gender_data = gender()
+        gender_dict = dict(sex=gender_data)
+        params.update(gender_dict)
+        about_fromAges()
+        from_ages_data = from_ages()
+        from_ages_dict = dict(age_from=from_ages_data)
+        params.update(from_ages_dict)
+        about_toAges()
+        to_ages_data = to_ages()
+        to_ages_dict = dict(age_to=to_ages_data)
+        params.update(to_ages_dict)
+        photo_data = dict(has_photo=1)
+        params.update(photo_data)
+        city_number = self.where_are_looking()
+        city_dict = dict(city=city_number)
+        about_status()
+        status_data = status()
+        if status_data == '0':
+            status_dict = dict(status=1)
+            params.update(status_dict)
+            print(params)
+            if city_number == None:
+                not_married = self.reqGet('users.search', params=params)
+                return not_married
+            else:
+                params.update(city_dict)
+                not_married = self.reqGet('users.search', params=params)
+                return not_married
+        elif status_data == '1':
+            status_dict = dict(status=6)
+            params.update(status_dict)
+            if city_number == None:
+                actively_looking = self.reqGet('users.search', params=params)
+                return actively_looking
+            else:
+                params.update(city_dict)
+                actively_looking = self.reqGet('users.search', params=params)
+                return actively_looking
+        elif status_data == 'q':
+            print('выход')
+            exit(0)

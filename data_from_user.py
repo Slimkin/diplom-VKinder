@@ -1,4 +1,3 @@
-from menu import about_fromAges, about_gender, about_toAges
 
 def gender():
     choice = input('-> ')
@@ -67,14 +66,3 @@ def status():
         print('введено неправильное значение, попробуйте еще раз')
         status()
     return stat
-
-
-def data_from_user():
-    about_gender()
-    gender_data = gender()
-    about_fromAges()
-    from_ages_data = from_ages()
-    about_toAges()
-    to_ages_data = to_ages()
-    dfu = f"'sex': '{gender_data}', 'age_from': '{from_ages_data}', 'age_to': '{to_ages_data}'"
-    return dfu
