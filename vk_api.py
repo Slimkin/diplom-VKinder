@@ -53,7 +53,7 @@ class VkApi:
             print('поиск без ограничений')
         elif choice == 'q':
             print('выход')
-            exit(0)
+            raise SystemExit
         else:
             print('введено неправильное значение, попробуйте еще раз')
             self.where_are_looking()
@@ -82,7 +82,6 @@ class VkApi:
         if status_data == '0':
             status_dict = dict(status=1)
             params.update(status_dict)
-            print(params)
             if city_number == None:
                 not_married = self.reqGet('users.search', params=params)
                 return not_married
@@ -102,4 +101,4 @@ class VkApi:
                 return actively_looking
         elif status_data == 'q':
             print('выход')
-            exit(0)
+            raise SystemExit

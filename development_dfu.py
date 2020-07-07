@@ -1,23 +1,24 @@
-from menu import about_fromAges, about_gender, about_toAges, about_status
 
 def gender():
     choice = input('-> ')
     if choice == '0':
-        gen = '2'    
+        gen = '2'
+        return gen    
     elif choice == '1':
         gen = '1'
+        return gen
     elif choice == 'q':
         print('выход')
-        exit(0)
+        raise SystemExit
     else:
         print('введено неправильное значение, попробуйте еще раз')
         gender()
-    return gen
 
 
 def from_ages():
     try:
         age = int(input('-> '))
+        return age
     except ValueError:
         print('введено неправильное значение\n0 - попробовать еще раз\nq - для выхода')
         choice = input('-> ')
@@ -26,11 +27,10 @@ def from_ages():
             from_ages()
         elif choice == 'q':
             print('выход')
-            exit(0)
+            raise SystemExit
         else:
             print('введено неправильное значение, попробуйте еще раз\nвведите возраст от которого осуществляется поиск')
-            from_ages()
-        return age
+            from_ages()  
     fa = str(age)
     return fa
 
@@ -38,6 +38,7 @@ def from_ages():
 def to_ages():
     try:
         age = int(input('-> '))
+        return age
     except TypeError:
         print('введено неправильное значение\n0 - попробовать еще раз\nq - для выхода')
         choice = input('-> ')
@@ -45,11 +46,10 @@ def to_ages():
             to_ages()
         elif choice == 'q':
             print('выход')
-            exit(0)
+            raise SystemExit
         else:
             print('введено неправильное значение, попробуйте еще раз\nвведите возраст до которого осуществляется поиск')
             to_ages()
-        return age
     ta = str(age)
     return ta
 
@@ -57,14 +57,15 @@ def to_ages():
 def status():
     choice = input('-> ')
     if choice == '0':
-        stat = '0'    
+        stat = '0'
+        return stat    
     elif choice == '1':
         stat = '1'
+        return stat
     elif choice == 'q':
         print('выход')
-        exit(0)
+        raise SystemExit
     else:
         print('введено неправильное значение, попробуйте еще раз')
         status()
-    return stat
-
+    

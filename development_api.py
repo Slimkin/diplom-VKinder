@@ -1,7 +1,7 @@
 import requests
 import time
 from data_from_user import from_ages, to_ages, status, gender
-from menu import about_city, about_status, about_fromAges, about_gender, about_toAges
+from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts
 from pprint import pprint
 
 class t:
@@ -93,6 +93,7 @@ class t:
                 not_married = self.reqGet('users.search', params=params)
                 return not_married
         elif status_data == '1':
+            print(params)
             status_dict = dict(status=6)
             params.update(status_dict)
             if city_number == None:
@@ -104,11 +105,30 @@ class t:
                 return actively_looking
         elif status_data == 'q':
             print('выход')
-            exit(0)
+            raise SystemExit
         
-        
+
+    def applicants(self):
+        applicants_data = self.pair_search()
+        print(applicants_data)
+        if applicants_data['response']['count'] == 0:
+            about_counts()
+            self.applicants()
+        else:
+            applicants_ids_data = [None]
+            for index, applicant_info in enumerate(applicants_data['response']['items']):
+                if index != 10:
+                    applicants_ids_data.append(applicant_info['id'])
+                elif index == 10:
+                    break
+            if applicants_ids_data == [None]:
+                about_counts()
+                self.applicants()
+            else:
+                return applicants_ids_data
+
     def test(self):
-        result = self.pair_search()
+        result = self.applicants()
         pprint(result)
 
 user = t('eshmargunov', '958eb5d439726565e9333aa30e50e0f937ee432e927f0dbd541c541887d919a7c56f95c04217915c32008')
