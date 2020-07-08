@@ -1,7 +1,7 @@
 import requests
 import time
 from data_from_user import from_ages, to_ages, status, gender
-from menu import about_city, about_status, about_fromAges, about_gender, about_toAges
+from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts, about_not_10_counts
 
 class VkApi:
 
@@ -102,3 +102,36 @@ class VkApi:
         elif status_data == 'q':
             print('выход')
             raise SystemExit
+
+
+    def applicants(self):
+        applicants_data = self.pair_search()
+        print(applicants_data)
+        if applicants_data['response']['count'] == 0:
+            about_counts()
+            return self.applicants()
+        elif applicants_data['response']['count'] < 10:
+            about_not_10_counts(), print(applicants_data['response']['count'])
+            applicants_ids_data = []
+            for index, applicant_info in enumerate(applicants_data['response']['items']):
+                if index != applicants_data['response']['count']:
+                    applicants_ids_data.append(applicant_info['id'])
+                elif index == applicants_data['response']['count']:
+                    break
+            if applicants_ids_data == []:
+                about_counts()
+                return self.applicants()
+            else:
+                return applicants_ids_data
+        else:
+            applicants_ids_data = []
+            for index, applicant_info in enumerate(applicants_data['response']['items']):
+                if index != 10:
+                    applicants_ids_data.append(applicant_info['id'])
+                elif index == 10:
+                    break
+            if applicants_ids_data == []:
+                about_counts()
+                return self.applicants()
+            else:
+                return applicants_ids_data

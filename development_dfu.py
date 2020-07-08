@@ -12,7 +12,7 @@ def gender():
         raise SystemExit
     else:
         print('введено неправильное значение, попробуйте еще раз')
-        gender()
+        return gender()
 
 
 def from_ages():
@@ -24,13 +24,13 @@ def from_ages():
         choice = input('-> ')
         if choice == '0':
             print('\nвведите возраст от которого осуществляется поиск')
-            from_ages()
+            return from_ages()
         elif choice == 'q':
             print('выход')
             raise SystemExit
         else:
             print('введено неправильное значение, попробуйте еще раз\nвведите возраст от которого осуществляется поиск')
-            from_ages()  
+            return from_ages()  
     fa = str(age)
     return fa
 
@@ -43,13 +43,13 @@ def to_ages():
         print('введено неправильное значение\n0 - попробовать еще раз\nq - для выхода')
         choice = input('-> ')
         if choice == '0':
-            to_ages()
+            return to_ages()
         elif choice == 'q':
             print('выход')
             raise SystemExit
         else:
             print('введено неправильное значение, попробуйте еще раз\nвведите возраст до которого осуществляется поиск')
-            to_ages()
+            return to_ages()
     ta = str(age)
     return ta
 
@@ -67,5 +67,5 @@ def status():
         raise SystemExit
     else:
         print('введено неправильное значение, попробуйте еще раз')
-        status()
+        return status()
     

@@ -24,3 +24,7 @@ def about_status():
 
 def about_counts():
     print('\nнет вариантов, попробуйте с другими данными')
+
+
+def about_not_10_counts():
+    print('\nпредположительное колличество вариантов составит: ')

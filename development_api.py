@@ -1,7 +1,7 @@
 import requests
 import time
 from data_from_user import from_ages, to_ages, status, gender
-from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts
+from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts, about_not_10_counts
 from pprint import pprint
 
 class t:
@@ -113,22 +113,50 @@ class t:
         print(applicants_data)
         if applicants_data['response']['count'] == 0:
             about_counts()
-            self.applicants()
+            return self.applicants()
+        elif applicants_data['response']['count'] < 10:
+            about_not_10_counts(), print(applicants_data['response']['count'])
+            applicants_ids_data = []
+            for index, applicant_info in enumerate(applicants_data['response']['items']):
+                if index != applicants_data['response']['count']:
+                    applicants_ids_data.append(applicant_info['id'])
+                elif index == applicants_data['response']['count']:
+                    break
+            if applicants_ids_data == []:
+                about_counts()
+                return self.applicants()
+            else:
+                return applicants_ids_data
         else:
-            applicants_ids_data = [None]
+            applicants_ids_data = []
             for index, applicant_info in enumerate(applicants_data['response']['items']):
                 if index != 10:
                     applicants_ids_data.append(applicant_info['id'])
                 elif index == 10:
                     break
-            if applicants_ids_data == [None]:
+            if applicants_ids_data == []:
                 about_counts()
-                self.applicants()
+                return self.applicants()
             else:
                 return applicants_ids_data
 
+
+    def get_3_photo(self, applicant_id):
+        photos_data = self.reqGet('photos.get', params={'owner_id': applicant_id, 'album_id': 'profile', 'extended': '1', 'photo_sizes': '1'})
+        prof_photos = {}
+        for photo in photos_data['response']['items']:
+            link_and_likes = {photo['sizes'][0]['src']: photo['likes']['count']}
+            prof_photos.update(link_and_likes)
+        sorted_by_likes = {k: v for k, v in sorted(prof_photos.items(), key=lambda item: item[1])} ### dont work
+        return sorted_by_likes
+
+    def photos_by_ids(self):
+        ids = self.applicants()
+        return ids
+
+
     def test(self):
-        result = self.applicants()
+        result = self.get_3_photo(418377661)
         pprint(result)
 
 user = t('eshmargunov', '958eb5d439726565e9333aa30e50e0f937ee432e927f0dbd541c541887d919a7c56f95c04217915c32008')
