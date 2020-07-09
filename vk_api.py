@@ -135,3 +135,19 @@ class VkApi:
                 return self.applicants()
             else:
                 return applicants_ids_data
+
+
+    def get_photo_links(self, applicant_id):
+        photos_data = self.reqGet('photos.get', params={'owner_id': applicant_id, 'album_id': 'profile', 'extended': '1', 'photo_sizes': '1'})
+        prof_photos = {}
+        for photo in photos_data['response']['items']:
+            link_and_likes = {photo['sizes'][0]['src']: photo['likes']['count']}
+            prof_photos.update(link_and_likes)
+        sorted_by_likes = [i for i in sorted(prof_photos.items(), key=lambda item: item[1], reverse=True)]
+        photos_links = []
+        for index, link in enumerate(sorted_by_likes):
+            if index < 3:
+                photos_links.append(link[0])
+            else:
+                break
+        return photos_links

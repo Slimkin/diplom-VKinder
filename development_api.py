@@ -3,6 +3,7 @@ import time
 from data_from_user import from_ages, to_ages, status, gender
 from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts, about_not_10_counts
 from pprint import pprint
+import json
 
 class t:
    
@@ -62,7 +63,7 @@ class t:
     
 
     def pair_search(self):
-        params = {}
+        params = {'count': '1000'}
         about_gender()
         gender_data = gender()
         gender_dict = dict(sex=gender_data)
@@ -93,7 +94,6 @@ class t:
                 not_married = self.reqGet('users.search', params=params)
                 return not_married
         elif status_data == '1':
-            print(params)
             status_dict = dict(status=6)
             params.update(status_dict)
             if city_number == None:
@@ -110,7 +110,6 @@ class t:
 
     def applicants(self):
         applicants_data = self.pair_search()
-        print(applicants_data)
         if applicants_data['response']['count'] == 0:
             about_counts()
             return self.applicants()
@@ -129,11 +128,8 @@ class t:
                 return applicants_ids_data
         else:
             applicants_ids_data = []
-            for index, applicant_info in enumerate(applicants_data['response']['items']):
-                if index != 10:
-                    applicants_ids_data.append(applicant_info['id'])
-                elif index == 10:
-                    break
+            for i in applicants_data['response']['items']:
+                applicants_ids_data.append(i['id'])
             if applicants_ids_data == []:
                 about_counts()
                 return self.applicants()
@@ -141,22 +137,56 @@ class t:
                 return applicants_ids_data
 
 
-    def get_3_photo(self, applicant_id):
+    def get_photo_links(self, applicant_id):
+        photos_links = []
         photos_data = self.reqGet('photos.get', params={'owner_id': applicant_id, 'album_id': 'profile', 'extended': '1', 'photo_sizes': '1'})
-        prof_photos = {}
-        for photo in photos_data['response']['items']:
-            link_and_likes = {photo['sizes'][0]['src']: photo['likes']['count']}
-            prof_photos.update(link_and_likes)
-        sorted_by_likes = {k: v for k, v in sorted(prof_photos.items(), key=lambda item: item[1])} ### dont work
-        return sorted_by_likes
+        resp = []
+        for res in photos_data:
+            resp.append(res)
+            print(resp)
+        if resp == ['response']:
+            prof_photos = {}
+            for photo in photos_data['response']['items']:
+                link_and_likes = {photo['sizes'][0]['src']: photo['likes']['count']}
+                prof_photos.update(link_and_likes)
+            sorted_by_likes = [i for i in sorted(prof_photos.items(), key=lambda item: item[1], reverse=True)]
+            for index, link in enumerate(sorted_by_likes):
+                if index < 3:
+                    photos_links.append(link[0])
+                else:
+                    break
+        elif resp == ['error']:
+            photos_links.append('private or deleted')
+        return photos_links
 
-    def photos_by_ids(self):
-        ids = self.applicants()
-        return ids
+    def get_result(self):
+        all_ids = self.applicants()
+        data_search = []
+        ids_count = 0
+        ids_10 = []
+        for i in all_ids:
+            if ids_count < 10:
+                if i not in data_search:
+                    ids_count += 1
+                    data_search.append(i)
+                    ids_10.append(i)
+                elif i in data_search:
+                    continue
+            else:
+                break
+        to_json = {}
+        for i in ids_10:
+            to_json.update({f'https://vk.com/id{i}': self.get_photo_links(i)}) 
+        result = json.dumps(to_json)
+        with open('result.json', 'w') as f:  #dont work
+            f.write(result)
+        return result
+        
 
+        
 
     def test(self):
-        result = self.get_3_photo(418377661)
+        result = self.get_result()
         pprint(result)
 
 user = t('eshmargunov', '958eb5d439726565e9333aa30e50e0f937ee432e927f0dbd541c541887d919a7c56f95c04217915c32008')
