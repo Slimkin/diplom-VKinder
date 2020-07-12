@@ -1,7 +1,7 @@
 import requests
 import time
 from data_from_user import from_ages, to_ages, status, gender
-from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts, about_not_10_counts
+from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts, about_not_10_counts, about_result, about_json
 from pprint import pprint
 import json
 
@@ -159,34 +159,56 @@ class t:
             photos_links.append('private or deleted')
         return photos_links
 
-    def get_result(self):
+
+    def get_result(self, all_ids, data_search, to_json):
+            ids_count = 0
+            ids_10 = []
+            for i in all_ids:
+                if ids_count < 10:
+                    if i not in data_search:
+                        ids_count += 1
+                        data_search.append(i)
+                        ids_10.append(i)
+                    elif i in data_search:
+                        continue
+                else:
+                    break
+            for i in ids_10:
+                to_json.update({f'https://vk.com/id{i}': self.get_photo_links(i)}) 
+            about_json()
+            choice = input('-> ')
+            with open(f'{choice}.json', 'w') as f:
+                json.dump(to_json, f)
+            with open(f'{choice}.json') as f:
+                result = json.load(f)
+            return result
+            
+
+    def choise(self, all_ids, data_search, to_json):
+        about_result()
+        choice = input('-> ')
+        if choice == '0':
+            return self.get_result(all_ids, data_search, to_json)
+        elif choice == '1':
+            pass
+        elif choice == 'q':
+            print('выход')
+            raise SystemExit
+        else:
+            print('введено неправильное значение, попробуйте еще раз')
+            return self.choise(all_ids, data_search, to_json)
+
+
+    def result(self):
         all_ids = self.applicants()
-        data_search = []
-        ids_count = 0
-        ids_10 = []
-        for i in all_ids:
-            if ids_count < 10:
-                if i not in data_search:
-                    ids_count += 1
-                    data_search.append(i)
-                    ids_10.append(i)
-                elif i in data_search:
-                    continue
-            else:
-                break
+        data_search = [] ### glodal
         to_json = {}
-        for i in ids_10:
-            to_json.update({f'https://vk.com/id{i}': self.get_photo_links(i)}) 
-        result = json.dumps(to_json)
-        with open('result.json', 'w') as f:  #dont work
-            f.write(result)
+        result = self.get_result(all_ids, data_search, to_json)
         return result
         
 
-        
-
     def test(self):
-        result = self.get_result()
+        result = self.result()
         pprint(result)
 
 user = t('eshmargunov', '958eb5d439726565e9333aa30e50e0f937ee432e927f0dbd541c541887d919a7c56f95c04217915c32008')

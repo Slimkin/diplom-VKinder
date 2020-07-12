@@ -56,7 +56,7 @@ class VkApi:
             raise SystemExit
         else:
             print('введено неправильное значение, попробуйте еще раз')
-            self.where_are_looking()
+            return self.where_are_looking()
         return city_number
 
     def pair_search(self):
