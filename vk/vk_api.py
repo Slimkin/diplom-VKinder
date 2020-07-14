@@ -1,7 +1,10 @@
 import requests
 import time
-from data_from_user import from_ages, to_ages, status, gender
-from menu import about_city, about_status, about_fromAges, about_gender, about_toAges, about_counts, about_not_10_counts
+from from_user.data_from_user import from_ages, to_ages, status, gender
+from vk.menu import *
+import json
+from dbase.db import add_result
+
 
 class VkApi:
 
@@ -11,7 +14,7 @@ class VkApi:
 
 
     def reqGet(self, method, params=None, reply=0):
-        _params = {'v': 5.120, 'access_token': self.token}
+        _params = {'v': 5.21, 'access_token': self.token}
         if params:
             _params.update(params)
         time.sleep(0.4)
@@ -42,6 +45,7 @@ class VkApi:
         return user_id
 
     def where_are_looking(self):
+        about_city()
         choice = input('-> ')
         if choice == '0':
             uid = self.get_id()
@@ -106,7 +110,6 @@ class VkApi:
 
     def applicants(self):
         applicants_data = self.pair_search()
-        print(applicants_data)
         if applicants_data['response']['count'] == 0:
             about_counts()
             return self.applicants()
@@ -151,3 +154,61 @@ class VkApi:
             else:
                 break
         return photos_links
+
+
+    def get_result(self, all_ids, data_search, to_json):
+        ids_count = 0
+        ids_10 = []
+        for i in all_ids:
+            if ids_count < 10:
+                if i not in data_search:
+                    ids_count += 1
+                    data_search.append(i)
+                    ids_10.append(i)
+                elif i in data_search:
+                    continue
+            else:
+                break
+        for i in ids_10:
+            to_json.update({f'https://vk.com/id{i}': self.get_photo_links(i)}) 
+        about_json()
+        choice = input('-> ')
+        with open(f'{choice}.json', 'w') as f:
+            json.dump(to_json, f)
+        with open(f'{choice}.json') as f:
+            result = json.load(f)
+        return result
+            
+
+    def choise(self):
+        about_result()
+        choice = input('-> ')
+        if choice == '0':
+            return '0'
+        elif choice == '1':
+            return '1'
+        elif choice == 'q':
+            print('выход')
+            raise SystemExit
+        else:
+            print('введено неправильное значение, попробуйте еще раз')
+            return self.choise()
+
+
+    def result(self,data_search):
+        all_ids = self.applicants()
+        to_json = {}
+        result = self.get_result(all_ids, data_search, to_json)
+        choice = self.choise()
+        if choice == '0':
+            return self.result(data_search)
+        elif choice == '1':
+            add_result(self.id, result)
+        
+        
+    def app(self):
+        welcome()
+        data_search = []
+        result = self.result(data_search)
+        return result
+
