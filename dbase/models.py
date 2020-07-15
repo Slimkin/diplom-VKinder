@@ -14,6 +14,6 @@ class VkinderDB(Base):
 
     user = Column(String(50), primary_key=True)
     search_data = Column(JSONB, default=list, nullable=False)
-    
+
     def __str__(self):
         return f'< {self.user} | {self.search_data} >'

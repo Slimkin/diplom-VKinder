@@ -1,6 +1,6 @@
 import requests
 import time
-from from_user.data_from_user import from_ages, to_ages, status, gender
+from from_user.data_from_user import from_ages, to_ages, status, gender, choise
 from vk.menu import *
 import json
 from dbase.db import add_result
@@ -11,7 +11,6 @@ class VkApi:
     def __init__(self, ids, token):
         self.id = ids
         self.token = token
-
 
     def reqGet(self, method, params=None, reply=0):
         _params = {'v': 5.21, 'access_token': self.token}
@@ -33,7 +32,6 @@ class VkApi:
                 res = self.reqGet(method, params, reply + 1)
                 return res.json()
         return resp.json()
-    
 
     def get_id(self):
         try:
@@ -49,8 +47,10 @@ class VkApi:
         choice = input('-> ')
         if choice == '0':
             uid = self.get_id()
-            city_number = self.reqGet('users.get', params={'fields': 'city', 'user_ids': uid})['response'][0]['city']['id']
-            city_name = self.reqGet('users.get', params={'fields': 'city'})['response'][0]['city']['title']
+            city_number = self.reqGet('users.get', params={
+                'fields': 'city', 'user_ids': uid})['response'][0]['city']['id']
+            city_name = self.reqGet('users.get', params={
+                'fields': 'city'})['response'][0]['city']['title']
             print(f'поиск по городу {city_name}')
         elif choice == '1':
             city_number = None
@@ -107,7 +107,6 @@ class VkApi:
             print('выход')
             raise SystemExit
 
-
     def applicants(self):
         applicants_data = self.pair_search()
         if applicants_data['response']['count'] == 0:
@@ -139,14 +138,16 @@ class VkApi:
             else:
                 return applicants_ids_data
 
-
     def get_photo_links(self, applicant_id):
-        photos_data = self.reqGet('photos.get', params={'owner_id': applicant_id, 'album_id': 'profile', 'extended': '1', 'photo_sizes': '1'})
+        photos_data = self.reqGet('photos.get', params={
+            'owner_id': applicant_id, 'album_id': 'profile', 'extended': '1', 'photo_sizes': '1'})
         prof_photos = {}
         for photo in photos_data['response']['items']:
-            link_and_likes = {photo['sizes'][0]['src']: photo['likes']['count']}
+            link_and_likes = {photo['sizes'][0]
+                              ['src']: photo['likes']['count']}
             prof_photos.update(link_and_likes)
-        sorted_by_likes = [i for i in sorted(prof_photos.items(), key=lambda item: item[1], reverse=True)]
+        sorted_by_likes = [i for i in sorted(
+            prof_photos.items(), key=lambda item: item[1], reverse=True)]
         photos_links = []
         for index, link in enumerate(sorted_by_likes):
             if index < 3:
@@ -154,7 +155,6 @@ class VkApi:
             else:
                 break
         return photos_links
-
 
     def get_result(self, all_ids, data_search, to_json):
         ids_count = 0
@@ -170,7 +170,7 @@ class VkApi:
             else:
                 break
         for i in ids_10:
-            to_json.update({f'https://vk.com/id{i}': self.get_photo_links(i)}) 
+            to_json.update({f'https://vk.com/id{i}': self.get_photo_links(i)})
         about_json()
         choice = input('-> ')
         with open(f'{choice}.json', 'w') as f:
@@ -178,37 +178,20 @@ class VkApi:
         with open(f'{choice}.json') as f:
             result = json.load(f)
         return result
-            
 
-    def choise(self):
-        about_result()
-        choice = input('-> ')
-        if choice == '0':
-            return '0'
-        elif choice == '1':
-            return '1'
-        elif choice == 'q':
-            print('выход')
-            raise SystemExit
-        else:
-            print('введено неправильное значение, попробуйте еще раз')
-            return self.choise()
-
-
-    def result(self,data_search):
+    def result(self, data_search):
         all_ids = self.applicants()
         to_json = {}
         result = self.get_result(all_ids, data_search, to_json)
-        choice = self.choise()
+        about_result()
+        choice = choise()
         if choice == '0':
             return self.result(data_search)
         elif choice == '1':
             add_result(self.id, result)
-        
-        
+
     def app(self):
         welcome()
         data_search = []
         result = self.result(data_search)
         return result
-
