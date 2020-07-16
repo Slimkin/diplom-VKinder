@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from dbase.models import create_all, VkinderDB
+from .models import create_all, VkinderDB
 
 
 def add_result(uid, json):

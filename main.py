@@ -4,9 +4,10 @@ from vk.get_token import get_token_link
 if __name__ == "__main__":
     print('-'*20)
     token_link = get_token_link()
+    print(token_link)
     print('-'*20)
 
     result = VkApi(
-        'eshmargunov', '958eb5d439726565e9333aa30e50e0f937ee432e927f0dbd541c541887d919a7c56f95c04217915c32008')
+        1102558, 'f839fd74f1ba06f8e74a820ddbd216666045a136230ff5e040266dff0afbdad18c87a2e0ba7df4d6a1fff')
 
     result.app()

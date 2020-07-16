@@ -1,10 +1,9 @@
 import requests
 import time
-from from_user.data_from_user import from_ages, to_ages, status, gender, choise
-from vk.menu import *
 import json
+from from_user.data_from_user import from_ages, to_ages, status, gender, choise
+from .menu import *
 from dbase.db import add_result
-
 
 class VkApi:
 
@@ -47,10 +46,11 @@ class VkApi:
         choice = input('-> ')
         if choice == '0':
             uid = self.get_id()
-            city_number = self.reqGet('users.get', params={
-                'fields': 'city', 'user_ids': uid})['response'][0]['city']['id']
-            city_name = self.reqGet('users.get', params={
-                'fields': 'city'})['response'][0]['city']['title']
+            city_number = self.reqGet('users.get', params={'fields': 'city', 'user_ids': uid})[
+                'response'][0]['city']['id']
+            print(city_number)
+            city_name = self.reqGet('users.get', params={'fields': 'city'})[
+                'response'][0]['city']['title']
             print(f'поиск по городу {city_name}')
         elif choice == '1':
             city_number = None
