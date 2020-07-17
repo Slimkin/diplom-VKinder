@@ -1,10 +1,6 @@
 import requests
 import time
 import json
-import sys
-import os
-sys.path.append(os.path('../user_data'))
-sys.path.append(os.path('../dbase'))
 from user_data.data_from_user import from_ages, to_ages, status, gender, choise
 from .menu import *
 from dbase.db import add_result

@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.append(os.path('./user_data'))
+sys.path.append(os.path('./dbase'))
+sys.path.append(os.path('./vk'))
 from vk.vk_api import VkApi
 from vk.get_token import get_token_link
 
