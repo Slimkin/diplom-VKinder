@@ -2,7 +2,7 @@ import requests
 import time
 import json
 from user_data.data_from_user import from_ages, to_ages, status, gender, choise
-from .menu import *
+from vk.menu import *
 from dbase.db import add_result
 
 class VkApi:
