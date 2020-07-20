@@ -1,14 +1,13 @@
 import requests
 import time
 import json
-from user_data.data_from_user import from_ages, to_ages, status, gender, choise
+from user_data.data_from_user import *
 from .menu import *
 from dbase.db import add_result
 
 class VkApi:
 
-    def __init__(self, ids, token):
-        self.id = ids
+    def __init__(self, token):
         self.token = token
 
     def reqGet(self, method, params=None, reply=0):
@@ -32,23 +31,12 @@ class VkApi:
                 return res.json()
         return resp.json()
 
-    def get_id(self):
-        try:
-            if self.id >= 0:
-                user_id = self.id
-        except TypeError:
-            user_id = self.reqGet('utils.resolveScreenName', params={
-                'screen_name': self.id})['response']['object_id']
-        return user_id
-
     def where_are_looking(self):
         about_city()
         choice = input('-> ')
         if choice == '0':
-            uid = self.get_id()
-            city_number = self.reqGet('users.get', params={'fields': 'city', 'user_ids': uid})[
+            city_number = self.reqGet('users.get', params={'fields': 'city'})[
                 'response'][0]['city']['id']
-            print(city_number)
             city_name = self.reqGet('users.get', params={'fields': 'city'})[
                 'response'][0]['city']['title']
             print(f'поиск по городу {city_name}')
@@ -188,7 +176,9 @@ class VkApi:
         if choice == '0':
             return self.result(data_search)
         elif choice == '1':
-            add_result(self.id, result)
+            about_name()
+            name = name_for_db()
+            add_result(name, result)
 
     def app(self):
         welcome()

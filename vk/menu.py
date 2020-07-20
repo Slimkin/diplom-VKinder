@@ -36,3 +36,7 @@ def about_result():
 
 def about_json():
     print('\nвведите название файла')
+
+
+def about_name():
+    print('\nвведите имя для записи в базу')

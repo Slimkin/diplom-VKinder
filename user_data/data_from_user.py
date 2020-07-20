@@ -82,3 +82,8 @@ def choise():
         else:
             print('введено неправильное значение, попробуйте еще раз')
             return choise()
+
+
+def name_for_db():
+    name = input('-> ')
+    return name
