@@ -2,6 +2,7 @@ import unittest
 import requests
 import sys
 import os
+from unittest.mock import patch
 sys.path.append(os.path.abspath('./vk'))
 from vk.vk_api import VkApi
 
@@ -12,11 +13,17 @@ class AppTest(unittest.TestCase):
 
     def test_token_valid_and_info_taked(self):
         result = self.test.reqGet('account.getProfileInfo')
-        
         self.assertGreater(result['response']['id'], 0)
 
-
-
+    def test_create_file(self):
+        directory = './'
+        files = os.listdir(directory)
+        json = [i for i in files if i.endswith('.json')] 
+        if json[0] in files:
+            result = True
+        else:
+            result = False
+        self.assertTrue(result)
 
 if __name__ == '__main__':
     unittest.main()
